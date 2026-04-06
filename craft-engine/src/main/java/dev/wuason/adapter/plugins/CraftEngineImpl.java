@@ -5,9 +5,6 @@ import dev.wuason.adapter.Utils;
 import net.momirealms.craftengine.bukkit.api.CraftEngineBlocks;
 import net.momirealms.craftengine.bukkit.api.CraftEngineFurniture;
 import net.momirealms.craftengine.bukkit.api.CraftEngineItems;
-import net.momirealms.craftengine.bukkit.util.BlockStateUtils;
-import net.momirealms.craftengine.core.item.CustomItem;
-import net.momirealms.craftengine.core.plugin.CraftEngine;
 import net.momirealms.craftengine.core.util.Key;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -27,7 +24,9 @@ public class CraftEngineImpl extends AdapterComp {
     @Override
     public ItemStack getAdapterItem(String id) {
         String[] split = id.split(":");
-        return split.length < 2 ? null : Optional.ofNullable(CraftEngineItems.byId(Key.of(split))).map(CustomItem::buildItemStack).orElse(null);
+        return split.length < 2 ? null : Optional.ofNullable(CraftEngineItems.byId(Key.of(split)))
+                .map(item -> item.buildBukkitItem())
+                .orElse(null);
     }
 
     @Override
@@ -38,13 +37,15 @@ public class CraftEngineImpl extends AdapterComp {
 
     @Override
     public Set<String> getAllItems() {
-        return CraftEngine.instance().itemManager().items().stream().map(key -> Utils.convert(getType(), key.toString())).collect(Collectors.toUnmodifiableSet());
+        return CraftEngineItems.loadedItems().keySet().stream()
+                .map(key -> Utils.convert(getType(), key.toString()))
+                .collect(Collectors.toUnmodifiableSet());
     }
 
     @Override
     public String getAdapterId(Entity entity) {
         if (!CraftEngineFurniture.isFurniture(entity)) return null;
-        return CraftEngineFurniture.isSeat(entity) ? Utils.convert(getType(), CraftEngineFurniture.getLoadedFurnitureBySeat(entity).id().toString()) : Utils.convert(getType(), CraftEngineFurniture.getLoadedFurnitureByBaseEntity(entity).id().toString());
+        return CraftEngineFurniture.isSeat(entity) ? Utils.convert(getType(), CraftEngineFurniture.getLoadedFurnitureBySeat(entity).id().toString()) : Utils.convert(getType(), CraftEngineFurniture.getLoadedFurnitureByMetaEntity(entity).id().toString());
     }
 
     @Override

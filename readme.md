@@ -2,7 +2,7 @@
 
 ### **Items Utils for Minecraft plugins.**
 
-### [JavaDoc here](https://repo.techmc.es/javadoc/releases/dev/wuason/Adapter/1.0.6.2 "Go to javadoc")
+### [JavaDoc here](https://repo.techmc.es/javadoc/releases/dev/wuason/Adapter/1.0.6.3 "Go to javadoc")
 
 ## Index
 
